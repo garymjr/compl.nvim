@@ -459,7 +459,6 @@ function M.on_completedone()
 	end
 
 	local completed_word = vim.v.completed_item.word or ""
-	local kind = vim.lsp.protocol.CompletionItemKind[completion_item.kind] or "Unknown"
 
 	-- No words were inserted since it is a duplicate, so set cursor to end of duplicate word
 	if completed_word == "" then
@@ -468,7 +467,8 @@ function M.on_completedone()
 	end
 
 	-- Expand snippets
-	if kind == "Snippet" then
+  -- NOTE: this should fix the issue of not all snippets correctly getting assigned the `Snippet` kind.
+	if completion_item.insertText then
 		pcall(vim.api.nvim_buf_set_text, bufnr, row - 1, col - vim.fn.strwidth(completed_word), row - 1, col, { "" })
 		pcall(vim.api.nvim_win_set_cursor, winnr, { row, col - vim.fn.strwidth(completed_word) })
 		vim.snippet.expand(vim.tbl_get(completion_item, "textEdit", "newText") or completion_item.insertText or "")
