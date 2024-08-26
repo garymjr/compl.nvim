@@ -276,6 +276,12 @@ function M.completefunc(findstart, base)
 					if vim.lsp.protocol.CompletionItemKind[b.kind] == "Text" then
 						return true
 					end
+          if a.kind == nil then
+            return true
+          end
+          if b.kind == nil then
+            return false
+          end
 					local diff = a.kind - b.kind
 					if diff < 0 then
 						return true
